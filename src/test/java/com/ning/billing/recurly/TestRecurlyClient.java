@@ -33,6 +33,7 @@ import com.ning.billing.recurly.model.Adjustments;
 import com.ning.billing.recurly.model.BillingInfo;
 import com.ning.billing.recurly.model.Coupon;
 import com.ning.billing.recurly.model.Coupons;
+import com.ning.billing.recurly.model.GiftCard;
 import com.ning.billing.recurly.model.Invoice;
 import com.ning.billing.recurly.model.Invoices;
 import com.ning.billing.recurly.model.Plan;
@@ -55,6 +56,7 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import sun.java2d.opengl.GLXSurfaceData;
 
 public class TestRecurlyClient {
 
@@ -1192,6 +1194,44 @@ public class TestRecurlyClient {
             recurlyClient.closeAccount(accountData.getAccountCode());
             recurlyClient.deletePlan(planData.getPlanCode());
             recurlyClient.deleteCoupon(couponData.getCouponCode());
+        }
+    }
+
+    @Test(groups = "integration")
+    public void testGiftCards() throws Exception {
+        final GiftCard giftCardData = TestUtils.createRandomGiftCard();
+        final Plan planData = TestUtils.createRandomPlan(CURRENCY);
+
+        try {
+            // Purchase a gift card
+            final GiftCard giftCard = recurlyClient.purchaseGiftCard(giftCardData);
+
+            Assert.assertEquals(giftCard.getProductCode(), giftCardData.getProductCode());
+            Assert.assertNull(giftCard.getRedeemedAt());
+
+            // Let's redeem on a subscription
+            final Plan plan = recurlyClient.createPlan(planData);
+            final Account account = giftCard.getGifterAccount();
+            final GiftCard redemtionData = new GiftCard();
+            final Subscription subscriptionData = new Subscription();
+
+            // set our gift card redemption data
+            redemtionData.setRedemptionCode(giftCard.getRedemptionCode());
+            subscriptionData.setGiftCard(redemtionData);
+
+            subscriptionData.setPlanCode(plan.getPlanCode());
+            subscriptionData.setAccount(account);
+            subscriptionData.setCurrency(CURRENCY);
+            subscriptionData.setUnitAmountInCents(1242);
+
+            final Subscription subscription = recurlyClient.createSubscription(subscriptionData);
+            Assert.assertNotNull(subscription);
+
+            final GiftCard redeemedCard = recurlyClient.getGiftCard(giftCard.getId());
+
+            Assert.assertNotNull(redeemedCard.getRedeemedAt());
+        } finally {
+            recurlyClient.deletePlan(planData.getPlanCode());
         }
     }
 }

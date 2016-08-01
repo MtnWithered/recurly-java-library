@@ -48,7 +48,7 @@ public class TestDelivery extends TestModelBase {
 
         final Delivery delivery = xmlMapper.readValue(deliveryData, Delivery.class);
 
-        Assert.assertEquals(delivery.getMethod(), Delivery.Method.EMAIL);
+        Assert.assertEquals(delivery.getMethod(), "email");
         Assert.assertEquals(delivery.getEmailAddress(), "john@example.com");
         Assert.assertEquals(delivery.getFirstName(), "John");
         Assert.assertEquals(delivery.getLastName(), "Smith");

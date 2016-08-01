@@ -77,7 +77,7 @@ public class TestGiftCard extends TestModelBase {
 
         final Delivery delivery = giftCard.getDelivery();
 
-        Assert.assertEquals(delivery.getMethod(), Delivery.Method.EMAIL);
+        Assert.assertEquals(delivery.getMethod(), "email");
         Assert.assertEquals(delivery.getEmailAddress(), "john@example.com");
         Assert.assertEquals(delivery.getFirstName(), "John");
         Assert.assertEquals(delivery.getLastName(), "Smith");

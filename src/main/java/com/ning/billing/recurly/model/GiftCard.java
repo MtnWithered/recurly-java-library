@@ -19,6 +19,8 @@ package com.ning.billing.recurly.model;
 
 import org.joda.time.DateTime;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -161,4 +163,34 @@ public class GiftCard extends RecurlyObject {
         this.canceledAt = dateTimeOrNull(canceledAt);
     }
 
+/*    *//**
+     *  Builds a redemption request
+     *
+     * @param accountCode Account code to redeem
+     * @return gift card redemption data
+     *//*
+    public static GiftCard.Redemption createRedemption(String accountCode) {
+        Redemption redemption = new Redemption();
+        Account accountData = new Account();
+        accountData.setAccountCode(accountCode);
+        redemption.setRecipientAccount(accountData);
+        return redemption;
+    }
+
+    *//**
+     * Represents gift card redemption data
+     *//*
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlRootElement
+    public static class Redemption extends RecurlyObject {
+
+        @XmlElement(name = "recipient_account")
+        private Account recipientAccount;
+
+        public Account getRecipientAccount() { return recipientAccount; }
+
+        public void setRecipientAccount(final Account recipientAccount) {
+            this.recipientAccount = recipientAccount;
+        }
+    }*/
 }

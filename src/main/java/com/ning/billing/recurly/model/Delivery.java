@@ -17,6 +17,7 @@
 
 package com.ning.billing.recurly.model;
 
+import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -28,30 +29,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "delivery")
 public class Delivery extends RecurlyObject {
 
-    /**
-     * An enum representing the different
-     * delivery methods
-     */
-    public enum Method {
-        EMAIL("email"),
-        POST("post");
-
-        private final String type;
-
-        private Method(final String type) {
-            this.type = type;
-        }
-
-        public String getType() {
-            return type;
-        }
-    }
-
     @XmlElement(name = "address")
     private Address address;
 
     @XmlElement(name = "method")
-    private Method method;
+    private String method;
 
     @XmlElement(name = "email_address")
     private String emailAddress;
@@ -117,12 +99,12 @@ public class Delivery extends RecurlyObject {
         this.personalMessage = stringOrNull(personalMessage);
     }
 
-    public Method getMethod() {
+    public String getMethod() {
         return method;
     }
 
     public void setMethod(final String method) {
-        this.method = Method.valueOf(method.toUpperCase());
+        this.method = method.toLowerCase();
     }
 
     public DateTime getDeliverAt() {
@@ -131,5 +113,53 @@ public class Delivery extends RecurlyObject {
 
     public void setDeliverAt(final Object deliverAt) {
         this.deliverAt = dateTimeOrNull(deliverAt);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final Delivery delivery = (Delivery) o;
+
+        if (address != null ? !address.equals(delivery.address) : delivery.address != null) {
+            return false;
+        }
+        if (deliverAt != null ? deliverAt.compareTo(delivery.deliverAt) != 0 : delivery.deliverAt != null) {
+            return false;
+        }
+        if (emailAddress != null ? !emailAddress.equals(delivery.emailAddress) : delivery.emailAddress != null) {
+            return false;
+        }
+        if (firstName != null ? !firstName.equals(delivery.firstName) : delivery.firstName != null) {
+            return false;
+        }
+        if (gifterName != null ? !gifterName.equals(delivery.gifterName) : delivery.gifterName != null) {
+            return false;
+        }
+        if (lastName != null ? !lastName.equals(delivery.lastName) : delivery.lastName != null) {
+            return false;
+        }
+        if (method != null ? !method.equals(delivery.method) : delivery.method != null) {
+            return false;
+        }
+        if (personalMessage != null ? !personalMessage.equals(delivery.personalMessage) : delivery.personalMessage != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(
+                address,
+                emailAddress,
+                firstName,
+                gifterName,
+                lastName,
+                method,
+                personalMessage
+        );
     }
 }
